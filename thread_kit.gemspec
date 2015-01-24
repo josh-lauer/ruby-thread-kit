@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["josh.lauer75@gmail.com"]
   spec.summary       = %q{Simple concurrency tools.}
   spec.description   = %q{A simple set of lightweight concurrency tools.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/josh-lauer/ruby-thread-kit"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
