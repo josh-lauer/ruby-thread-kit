@@ -34,10 +34,17 @@ module ThreadKit
         thr_id = Thread.current.__id__
         thread_store = store[thr_id]
         if thread_store
-          (thread_store[obj.__id__] ||= {})[key.to_sym] = val
+          obj_store = thread_store[obj.__id__]
+          if obj_store
+            obj_store[key.to_sym] = val
+          else
+            define_object_finalizer(obj)
+            thread_store[obj.__id__][key.to_sym] = val
+          end
         else
           thread_init_lock.synchronize do
             unless store.key?(thr_id)
+              define_thread_finalizer(Thread.current)
               store[thr_id] = { obj.__id__ => { key.to_sym => val } }
             end
           end
@@ -74,7 +81,6 @@ module ThreadKit
       end
 
       def finalize_object!(obj_id)
-        puts "FINALIZING OBJECT #{obj_id}"
         store.each_pair { |_, objects| objects.delete(obj_id) }
       end
 
@@ -86,7 +92,6 @@ module ThreadKit
 
       # delete all thread locals for this thread when it is deconstructed
       def finalize_thread!(obj_id)
-        puts "FINALIZING THREAD #{obj_id}"
         store.delete(obj_id)
       end
     end
