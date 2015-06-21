@@ -26,7 +26,7 @@ module ThreadKit
       private
 
       def object_store(obj)
-        thread_store[obj.__obj__]
+        thread_store[obj.__id__]
       end
 
       def thread_store
