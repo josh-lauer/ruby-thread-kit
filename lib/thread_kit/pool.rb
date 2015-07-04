@@ -1,3 +1,6 @@
+require 'thread'
+require 'monitor'
+
 module ThreadKit
   class Pool
     attr_reader :lock, :size, :jobs, :workers
