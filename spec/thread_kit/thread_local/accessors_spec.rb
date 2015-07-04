@@ -21,9 +21,9 @@ describe ThreadKit::ThreadLocal::Accessors do
 
   # assert that method_name is defined on klass_instance such that calls to it result in the appropriate
   #   key being retrieved from ThreadKit::ThreadLocal::Store relative_to the appropriate object
-  def assert_instance_method_reader_defined(method_name, default: nil, relative_to: klass_instance)
+  def assert_instance_method_reader_defined(method_name, relative_to: klass_instance)
     expect(klass_instance).to respond_to(method_name)
-    expect(ThreadKit::ThreadLocal::Store).to receive(:get).with(relative_to, method_name, default: default).and_return(:bar)
+    expect(ThreadKit::ThreadLocal::Store).to receive(:get).with(relative_to, method_name, {}).and_return(:bar)
     expect(klass_instance.send(method_name)).to eql(:bar)
   end
 
@@ -33,15 +33,15 @@ describe ThreadKit::ThreadLocal::Accessors do
     method_name = (method_name.to_s + '=').squeeze('=').to_sym
     store_key = method_name.to_s.sub(/\=$/, '').to_sym
     expect(klass_instance).to respond_to(method_name)
-    expect(ThreadKit::ThreadLocal::Store).to receive(:set).with(relative_to, store_key, :foo).and_return(:foo)
+    expect(ThreadKit::ThreadLocal::Store).to receive(:set).with(relative_to, store_key, :foo, {}).and_return(:foo)
     expect(klass_instance.send(method_name, :foo)).to eql(:foo)
   end
 
   # assert that method_name is defined on klass such that calls to it result in the appropriate
   #   key being retrieved from ThreadKit::ThreadLocal::Store relative to klass
-  def assert_singleton_method_reader_defined(method_name, default: nil)
+  def assert_singleton_method_reader_defined(method_name)
     expect(klass).to respond_to(method_name)
-    expect(ThreadKit::ThreadLocal::Store).to receive(:get).with(klass, method_name, default: default).and_return(:bar)
+    expect(ThreadKit::ThreadLocal::Store).to receive(:get).with(klass, method_name, {}).and_return(:bar)
     expect(klass.send(method_name)).to eql(:bar)
   end
 
@@ -51,7 +51,7 @@ describe ThreadKit::ThreadLocal::Accessors do
     method_name = (method_name.to_s + '=').squeeze('=').to_sym
     store_key = method_name.to_s.sub(/\=$/, '').to_sym
     expect(klass).to respond_to(method_name)
-    expect(ThreadKit::ThreadLocal::Store).to receive(:set).with(klass, store_key, :foo).and_return(:foo)
+    expect(ThreadKit::ThreadLocal::Store).to receive(:set).with(klass, store_key, :foo, {}).and_return(:foo)
     expect(klass.send(method_name, :foo)).to eql(:foo)
   end
 
