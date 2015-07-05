@@ -53,7 +53,6 @@ module ThreadKit
         if visibility && ![:public, :private, :protected].include?(visibility)
           raise "visibility must be :public, :private, or :protected"
         end
-        options = Hash[options.map{|(k,v)| [k.to_sym,v]}]
         attrs.each do |attribute|
           define_method(attribute) do
             Store.get(self.class, attribute, **options)
@@ -77,7 +76,6 @@ module ThreadKit
         if visibility && ![:public, :private, :protected].include?(visibility)
           raise "visibility must be :public, :private, or :protected"
         end
-        options = Hash[options.map{|(k,v)| [k.to_sym,v]}]
         attrs.each do |attribute|
           method_name = "#{attribute}=".to_sym
           define_method(method_name) do |new_value|
